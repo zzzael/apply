@@ -100,36 +100,28 @@
         }
 
         function apply() {
-            const webhookUrl = 'https://discord.com/api/webhooks/1333132876056629248/Yc9t6866DMOhU305bTOeBG79-xq1xQxJoXJLW3zCctK1UqLVua2Obc93mA9Qf7ANba5r'; // Replace with your Discord webhook URL
             const username = document.getElementById('discordInput').value;
 
             if (username.length < 3) return;
 
-            const payload = {
-                content: null,
-                embeds: [
-                    {
-                        title: "New Application",
-                        description: `Discord Username: **${username}**`,
-                        color: 5814783
-                    }
-                ]
-            };
-
-            fetch(webhookUrl, {
+            // Send the username to your backend API
+            fetch('http://api.yzycraft.co.uk:3000/apply', { 
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(payload)
-            }).then(response => {
-                if (response.ok) {
+                body: JSON.stringify({ discordUsername: username }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
                     alert('THANK YOU!');
                     window.location.href = 'https://opium.yzycraft.co.uk';
                 } else {
                     alert('Failed to send application. Please try again.');
                 }
-            }).catch(error => {
+            })
+            .catch(error => {
                 console.error('Error:', error);
                 alert('An error occurred. Please try again.');
             });
